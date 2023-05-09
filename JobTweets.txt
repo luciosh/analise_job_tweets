@@ -1,0 +1,34 @@
+// Pré-processamento da fonte de dados de job tweets
+// Para usar esse arquivo, carregue-o dentro do PowerQuery
+
+let
+    Fonte = Csv.Document(File.Contents("insira aqui o diretorio do seu arquivo"),[Delimiter=",", Columns=13, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Fonte, [PromoteAllScalars=true]),
+    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"ID", type text}, {"Timestamp", type datetime}, {"User", type text}, {"Text", type text}, {"Hashtag", type text}, {"Retweets", Int64.Type}, {"Likes", Int64.Type}, {"Replies", Int64.Type}, {"Source", type text}, {"Location", type text}, {"Verified_Account", type logical}, {"Followers", Int64.Type}, {"Following", Int64.Type}}),
+    #"Colunas Removidas" = Table.RemoveColumns(#"Tipo Alterado",{"Timestamp", "User", "Text", "Retweets", "Likes", "Replies", "Source", "Location", "Verified_Account", "Followers", "Following"}),
+    #"Valor Substituído" = Table.ReplaceValue(#"Colunas Removidas","[","",Replacer.ReplaceText,{"Hashtag"}),
+    #"Valor Substituído1" = Table.ReplaceValue(#"Valor Substituído","]","",Replacer.ReplaceText,{"Hashtag"}),
+    #"Valor Substituído2" = Table.ReplaceValue(#"Valor Substituído1",",","",Replacer.ReplaceText,{"Hashtag"}),
+    #"Valor Substituído3" = Table.ReplaceValue(#"Valor Substituído2","'","",Replacer.ReplaceText,{"Hashtag"}),
+    #"Dividir Coluna por Delimitador" = Table.SplitColumn(#"Valor Substituído3", "Hashtag", Splitter.SplitTextByDelimiter(" ", QuoteStyle.Csv), {"Hashtag.1", "Hashtag.2", "Hashtag.3", "Hashtag.4", "Hashtag.5", "Hashtag.6", "Hashtag.7", "Hashtag.8", "Hashtag.9", "Hashtag.10", "Hashtag.11", "Hashtag.12", "Hashtag.13", "Hashtag.14", "Hashtag.15"}),
+    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Dividir Coluna por Delimitador",{{"Hashtag.1", type text}, {"Hashtag.2", type text}, {"Hashtag.3", type text}, {"Hashtag.4", type text}, {"Hashtag.5", type text}, {"Hashtag.6", type text}, {"Hashtag.7", type text}, {"Hashtag.8", type text}, {"Hashtag.9", type text}, {"Hashtag.10", type text}, {"Hashtag.11", type text}, {"Hashtag.12", type text}, {"Hashtag.13", type text}, {"Hashtag.14", type text}, {"Hashtag.15", type text}}),
+    #"Colunas Não Dinâmicas" = Table.UnpivotOtherColumns(#"Tipo Alterado1", {"ID"}, "Atributo", "Valor"),
+    #"Colunas Removidas1" = Table.RemoveColumns(#"Colunas Não Dinâmicas",{"Atributo"}),
+    #"Valor Substituído4" = Table.ReplaceValue(#"Colunas Removidas1","","Sem Hashtag",Replacer.ReplaceValue,{"Valor"})
+in
+    #"Valor Substituído4"let
+    Fonte = Csv.Document(File.Contents("insira aqui o diretorio do seu arquivo"),[Delimiter=",", Columns=13, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Fonte, [PromoteAllScalars=true]),
+    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"ID", type text}, {"Timestamp", type datetime}, {"User", type text}, {"Text", type text}, {"Hashtag", type text}, {"Retweets", Int64.Type}, {"Likes", Int64.Type}, {"Replies", Int64.Type}, {"Source", type text}, {"Location", type text}, {"Verified_Account", type logical}, {"Followers", Int64.Type}, {"Following", Int64.Type}}),
+    #"Colunas Removidas" = Table.RemoveColumns(#"Tipo Alterado",{"Timestamp", "User", "Text", "Retweets", "Likes", "Replies", "Source", "Location", "Verified_Account", "Followers", "Following"}),
+    #"Valor Substituído" = Table.ReplaceValue(#"Colunas Removidas","[","",Replacer.ReplaceText,{"Hashtag"}),
+    #"Valor Substituído1" = Table.ReplaceValue(#"Valor Substituído","]","",Replacer.ReplaceText,{"Hashtag"}),
+    #"Valor Substituído2" = Table.ReplaceValue(#"Valor Substituído1",",","",Replacer.ReplaceText,{"Hashtag"}),
+    #"Valor Substituído3" = Table.ReplaceValue(#"Valor Substituído2","'","",Replacer.ReplaceText,{"Hashtag"}),
+    #"Dividir Coluna por Delimitador" = Table.SplitColumn(#"Valor Substituído3", "Hashtag", Splitter.SplitTextByDelimiter(" ", QuoteStyle.Csv), {"Hashtag.1", "Hashtag.2", "Hashtag.3", "Hashtag.4", "Hashtag.5", "Hashtag.6", "Hashtag.7", "Hashtag.8", "Hashtag.9", "Hashtag.10", "Hashtag.11", "Hashtag.12", "Hashtag.13", "Hashtag.14", "Hashtag.15"}),
+    #"Tipo Alterado1" = Table.TransformColumnTypes(#"Dividir Coluna por Delimitador",{{"Hashtag.1", type text}, {"Hashtag.2", type text}, {"Hashtag.3", type text}, {"Hashtag.4", type text}, {"Hashtag.5", type text}, {"Hashtag.6", type text}, {"Hashtag.7", type text}, {"Hashtag.8", type text}, {"Hashtag.9", type text}, {"Hashtag.10", type text}, {"Hashtag.11", type text}, {"Hashtag.12", type text}, {"Hashtag.13", type text}, {"Hashtag.14", type text}, {"Hashtag.15", type text}}),
+    #"Colunas Não Dinâmicas" = Table.UnpivotOtherColumns(#"Tipo Alterado1", {"ID"}, "Atributo", "Valor"),
+    #"Colunas Removidas1" = Table.RemoveColumns(#"Colunas Não Dinâmicas",{"Atributo"}),
+    #"Valor Substituído4" = Table.ReplaceValue(#"Colunas Removidas1","","Sem Hashtag",Replacer.ReplaceValue,{"Valor"})
+in
+    #"Valor Substituído4"

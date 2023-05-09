@@ -1,0 +1,19 @@
+// Pré-processamento da fonte de dados de hashtags dos tweets da vagas de emprego
+// Para usar esse arquivo, carregue-o dentro do PowerQuery
+let
+    Fonte = Csv.Document(File.Contents("insira aqui o diretorio do seu arquivo"),[Delimiter=",", Columns=13, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
+    #"Cabeçalhos Promovidos" = Table.PromoteHeaders(Fonte, [PromoteAllScalars=true]),
+    #"Tipo Alterado" = Table.TransformColumnTypes(#"Cabeçalhos Promovidos",{{"ID", type text}, {"Timestamp", type datetime}, {"User", type text}, {"Text", type text}, {"Hashtag", type text}, {"Retweets", Int64.Type}, {"Likes", Int64.Type}, {"Replies", Int64.Type}, {"Source", type text}, {"Location", type text}, {"Verified_Account", type logical}, {"Followers", Int64.Type}, {"Following", Int64.Type}}),
+    #"Texto Inserido Entre os Delimitadores" = Table.AddColumn(#"Tipo Alterado", "Texto Entre os Delimitadores", each Text.BetweenDelimiters([Source], """", """"), type text),
+    #"Valor Substituído" = Table.ReplaceValue(#"Texto Inserido Entre os Delimitadores","http://","",Replacer.ReplaceText,{"Texto Entre os Delimitadores"}),
+    #"Valor Substituído1" = Table.ReplaceValue(#"Valor Substituído","https://","",Replacer.ReplaceText,{"Texto Entre os Delimitadores"}),
+    #"Valor Substituído2" = Table.ReplaceValue(#"Valor Substituído1","www.","",Replacer.ReplaceText,{"Texto Entre os Delimitadores"}),
+    #"Texto Extraído Antes do Delimitador" = Table.TransformColumns(#"Valor Substituído2", {{"Texto Entre os Delimitadores", each Text.BeforeDelimiter(_, "."), type text}}),
+    #"Valor Substituído3" = Table.ReplaceValue(#"Texto Extraído Antes do Delimitador","","Sem localização",Replacer.ReplaceValue,{"Location"}),
+    #"Valor Substituído4" = Table.ReplaceValue(#"Valor Substituído3","","Sem Hashtag",Replacer.ReplaceValue,{"Hashtag"}),
+    #"Valor Substituído5" = Table.ReplaceValue(#"Valor Substituído4","United States","USA",Replacer.ReplaceText,{"Location"}),
+    #"Valor Substituído6" = Table.ReplaceValue(#"Valor Substituído5","Washington DC","Washington, DC",Replacer.ReplaceText,{"Location"}),
+    #"Valor Substituído7" = Table.ReplaceValue(#"Valor Substituído6","Washington. DC","Washington, DC",Replacer.ReplaceText,{"Location"}),
+    #"Valor Substituído8" = Table.ReplaceValue(#"Valor Substituído7","Washington, DC ","Washington, DC",Replacer.ReplaceText,{"Location"})
+in
+    #"Valor Substituído8"
