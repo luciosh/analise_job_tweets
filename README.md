@@ -28,8 +28,8 @@ A qualidade dos dados (em relação a uniformidade de tipos, padronização de i
 Principalmente baseado no campo de ‘texto’ do dataset, é possível desenvolver uma forma de análise textual com aprendizado de máquina que complemente as interpretações do painel e até teste a predição de algumas outras informações do painel ou de outro anúncio de vaga, conforme o padrão estabelecido. 
 
 5.	Referências
-Repositório do Projeto: GitHub - luciosh/analise_job_tweets
-Dataset: Job Vacancy Tweets | Kaggle
-Link para o relatório: Microsoft Power BI
+Repositório do Projeto: https://github.com/luciosh/analise_job_tweets
+Dataset: https://www.kaggle.com/datasets/prasad22/job-vacancy-tweets
+Link para o relatório: https://app.powerbi.com/view?r=eyJrIjoiOTM5OGZkZDEtZTM3OS00NWUzLTg2YWYtYmJhZWI4OGNiM2YxIiwidCI6IjQyN2QxMjM1LTVjOWMtNDAwZS04MWY0LWQ1MWNmYmM2MWE4OSJ9
 
 
